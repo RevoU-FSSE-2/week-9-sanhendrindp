@@ -14,7 +14,7 @@ app.use(body_parser_1.default.json());
 // =============================== BANKING APP ======================================
 // GET/user/:id
 app.get("/user/:id", (req, res) => {
-    const userId = parseInt(req.params.id);
+    const userId = parseInt(req.params.id); // Make sure to make user id as number
     const account = data_1.user.find((item) => item.id === userId);
     if (!account) {
         res.status(404).json({

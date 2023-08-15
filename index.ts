@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 // GET/user/:id
 app.get("/user/:id", (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id);
+  const userId = parseInt(req.params.id); // Make sure to make user id as number
   const account = user.find((item) => item.id === userId);
 
   if (!account) {
