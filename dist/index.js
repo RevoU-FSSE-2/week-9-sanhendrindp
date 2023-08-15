@@ -16,15 +16,23 @@ app.use(body_parser_1.default.json());
 app.get("/user/:id", (req, res) => {
     const userId = parseInt(req.params.id); // Make sure to make user id as number
     const account = data_1.user.find((item) => item.id === userId);
+    //   console.log(account);
+    //   If user input not a number ID
+    if (isNaN(userId)) {
+        res.status(400).json({
+            Message: "Invalid user ID 🚫",
+        });
+        return;
+    }
     if (!account) {
         res.status(404).json({
-            Message: `User id ${userId} not found 🚫`,
+            Message: `User ID ${userId} not found 🚫`,
         });
     }
     else {
         res.status(200).json({
             Message: `User id ${userId} found ✅`,
-            account,
+            Account: account,
         });
     }
 });
