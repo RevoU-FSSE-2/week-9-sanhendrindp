@@ -7,6 +7,7 @@ exports.user = [
         name: "Hendrin",
         address: "Malang",
         balance: 100000,
-        expense: 5000,
+        expense: 0,
+        income: 0,
     },
 ];
