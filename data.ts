@@ -1,4 +1,4 @@
-export interface Account {
+export interface User {
   id: number;
   name: string;
   address: string;
@@ -6,7 +6,7 @@ export interface Account {
   expense: number;
 }
 
-export let account: Account[] = [
+export let user: User[] = [
   {
     id: 1,
     name: "Hendrin",

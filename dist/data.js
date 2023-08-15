@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.account = void 0;
-exports.account = [
+exports.user = void 0;
+exports.user = [
     {
         id: 1,
         name: "Hendrin",
