@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-import { User, user } from "./data";
+// import { User, user } from "./data";
 
 dotenv.config();
 
@@ -13,30 +13,30 @@ app.use(bodyParser.json());
 // =============================== HTTP ROUTE FOR BANKING APP ======================================
 
 // GET/user/:id
-app.get("/user/:id", (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id); // Make sure to make user id as number
-  const account = user.find((item) => item.id === userId);
-  //   console.log(account);
+// app.get("/user/:id", (req: Request, res: Response) => {
+//   const userId = parseInt(req.params.id); // Make sure to make user id as number
+//   const account = user.find((item) => item.id === userId);
+//   //   console.log(account);
 
-  //   If user input not a number ID
-  if (isNaN(userId)) {
-    res.status(400).json({
-      Message: "Invalid user ID 🚫",
-    });
-    return;
-  }
+//   //   If user input not a number ID
+//   if (isNaN(userId)) {
+//     res.status(400).json({
+//       Message: "Invalid user ID 🚫",
+//     });
+//     return;
+//   }
 
-  if (!account) {
-    res.status(404).json({
-      Message: `User ID ${userId} not found 🚫`,
-    });
-  } else {
-    res.status(200).json({
-      Message: `User id ${userId} found ✅`,
-      Account: account,
-    });
-  }
-});
+//   if (!account) {
+//     res.status(404).json({
+//       Message: `User ID ${userId} not found 🚫`,
+//     });
+//   } else {
+//     res.status(200).json({
+//       Message: `User id ${userId} found ✅`,
+//       Account: account,
+//     });
+//   }
+// });
 
 // POST/transaction
 // app.post("/transaction", (req: Request, res: Response) => {
