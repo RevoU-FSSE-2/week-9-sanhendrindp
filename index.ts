@@ -62,22 +62,22 @@ app.get("/user/:id", async (req, res) => {
 
 // DELETE transaction
 app.delete("/transaction/:id", async (req, res) => {
-  const user_id = Number(req.params.id);
-  // console.log(user_id);
+  const transaction_id = Number(req.params.id);
+  // console.log(transaction_id);
 
   // Error handling if input id is NaN
-  if (isNaN(user_id)) {
+  if (isNaN(transaction_id)) {
     res.status(400).json({
-      Message: "Invalid user ID 🚫",
+      Message: "Invalid transaction ID 🚫",
     });
     return;
   }
 
   try {
-    const delConfrim = await delTransaction(user_id);
+    const delConfrim = await delTransaction(transaction_id);
     // console.log(delConfrim);
     res.status(200).json({
-      Message: `User ID ${delConfrim} transaction deleted 🚽`,
+      Message: `Transaction ID ${delConfrim} deleted 🚽`,
     });
   } catch (error) {
     res.status(500).json({
@@ -99,24 +99,22 @@ app.post("/transaction", async (req, res) => {
   }
 
   try {
-    const transactionUser = await addTransaction(type, amount, user_id);
+    const transaction = await addTransaction(type, amount, user_id);
 
     res.status(201).json({
-      Message: `Transaction success for User ID ${transactionUser} ✅`,
+      Message: `Transaction ID ${transaction} created ✅`,
     });
   } catch (error) {
     const typedError = error as Error;
-    if (
+    if (typedError.message.includes(`User with ID ${user_id} not found`)) {
+      res.status(404).json({
+        Message: `User with ID ${user_id} not found 🚫`,
+      });
+    } else if (
       typedError.message.includes("Transaction amount exceeds user balance")
     ) {
       res.status(400).json({
         Message: "Transaction amount exceeds user balance 🚫",
-      });
-    } else if (
-      typedError.message.includes(`User with ID ${user_id} not found`)
-    ) {
-      res.status(404).json({
-        Message: `User with ID ${user_id} not found 🚫`,
       });
     } else {
       res.status(500).json({

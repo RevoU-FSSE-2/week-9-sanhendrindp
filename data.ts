@@ -89,26 +89,25 @@ export async function getUser(id: number): Promise<UserAccount[]> {
 // getUser(1);
 
 // Function to delete a transaction by ID
-export async function delTransaction(user_id: number): Promise<string> {
+export async function delTransaction(id: number): Promise<string> {
   try {
     const connection = await pool.getConnection();
 
     // Delete the transactions by user ID
-    await connection.query(
-      `DELETE FROM banking_app.transaction WHERE user_id = ?`,
-      [user_id]
-    );
+    await connection.query(`DELETE FROM banking_app.transaction WHERE id = ?`, [
+      id,
+    ]);
 
     connection.release();
 
-    return `${user_id}`;
+    return `${id}`;
   } catch (error) {
     console.error("Error when deleting transactions:", error);
     throw error;
   }
 }
 
-// delTransaction(3);
+// delTransaction(1);
 
 // Function to add a transaction
 export async function addTransaction(
@@ -135,18 +134,23 @@ export async function addTransaction(
     }
 
     // Insert the transaction
-    await connection.query<mysql.RowDataPacket[]>(
+    const [insertResult] = await connection.query<mysql.ResultSetHeader>(
       `INSERT INTO banking_app.transaction (type, amount, user_id) VALUES (?, ?, ?)`,
       [type, amount, user_id]
     );
 
     connection.release();
 
-    return user_id;
+    // Return id transaction table
+    const transactionId = insertResult.insertId;
+    // console.log(transactionId);
+    return transactionId;
   } catch (error) {
     console.error("Error when creating transaction:", error);
     throw error;
   }
 }
 
-// addTransaction("expense", 400000, 2);
+// addTransaction("income", 20000, 2);
+
+// Function to edit a transaction

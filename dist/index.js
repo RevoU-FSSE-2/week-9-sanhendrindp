@@ -70,20 +70,20 @@ app.get("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 // DELETE transaction
 app.delete("/transaction/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user_id = Number(req.params.id);
-    // console.log(user_id);
+    const transaction_id = Number(req.params.id);
+    // console.log(transaction_id);
     // Error handling if input id is NaN
-    if (isNaN(user_id)) {
+    if (isNaN(transaction_id)) {
         res.status(400).json({
-            Message: "Invalid user ID 🚫",
+            Message: "Invalid transaction ID 🚫",
         });
         return;
     }
     try {
-        const delConfrim = yield (0, data_1.delTransaction)(user_id);
+        const delConfrim = yield (0, data_1.delTransaction)(transaction_id);
         // console.log(delConfrim);
         res.status(200).json({
-            Message: `User ID ${delConfrim} transaction deleted 🚽`,
+            Message: `Transaction ID ${delConfrim} deleted 🚽`,
         });
     }
     catch (error) {
@@ -103,21 +103,21 @@ app.post("/transaction", (req, res) => __awaiter(void 0, void 0, void 0, functio
         return;
     }
     try {
-        const transactionUser = yield (0, data_1.addTransaction)(type, amount, user_id);
+        const transaction = yield (0, data_1.addTransaction)(type, amount, user_id);
         res.status(201).json({
-            Message: `Transaction success for User ID ${transactionUser} ✅`,
+            Message: `Transaction ID ${transaction} created ✅`,
         });
     }
     catch (error) {
         const typedError = error;
-        if (typedError.message.includes("Transaction amount exceeds user balance")) {
-            res.status(400).json({
-                Message: "Transaction amount exceeds user balance 🚫",
-            });
-        }
-        else if (typedError.message.includes(`User with ID ${user_id} not found`)) {
+        if (typedError.message.includes(`User with ID ${user_id} not found`)) {
             res.status(404).json({
                 Message: `User with ID ${user_id} not found 🚫`,
+            });
+        }
+        else if (typedError.message.includes("Transaction amount exceeds user balance")) {
+            res.status(400).json({
+                Message: "Transaction amount exceeds user balance 🚫",
             });
         }
         else {

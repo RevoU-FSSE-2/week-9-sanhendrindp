@@ -81,14 +81,16 @@ function getUser(id) {
 exports.getUser = getUser;
 // getUser(1);
 // Function to delete a transaction by ID
-function delTransaction(user_id) {
+function delTransaction(id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const connection = yield pool.getConnection();
             // Delete the transactions by user ID
-            yield connection.query(`DELETE FROM banking_app.transaction WHERE user_id = ?`, [user_id]);
+            yield connection.query(`DELETE FROM banking_app.transaction WHERE id = ?`, [
+                id,
+            ]);
             connection.release();
-            return `${user_id}`;
+            return `${id}`;
         }
         catch (error) {
             console.error("Error when deleting transactions:", error);
@@ -97,7 +99,7 @@ function delTransaction(user_id) {
     });
 }
 exports.delTransaction = delTransaction;
-// delTransaction(3);
+// delTransaction(1);
 // Function to add a transaction
 function addTransaction(type, amount, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -113,9 +115,12 @@ function addTransaction(type, amount, user_id) {
                 throw new Error(`Transaction amount exceeds user balance`);
             }
             // Insert the transaction
-            yield connection.query(`INSERT INTO banking_app.transaction (type, amount, user_id) VALUES (?, ?, ?)`, [type, amount, user_id]);
+            const [insertResult] = yield connection.query(`INSERT INTO banking_app.transaction (type, amount, user_id) VALUES (?, ?, ?)`, [type, amount, user_id]);
             connection.release();
-            return user_id;
+            // Return id transaction table
+            const transactionId = insertResult.insertId;
+            // console.log(transactionId);
+            return transactionId;
         }
         catch (error) {
             console.error("Error when creating transaction:", error);
@@ -124,4 +129,5 @@ function addTransaction(type, amount, user_id) {
     });
 }
 exports.addTransaction = addTransaction;
-// addTransaction("expense", 400000, 2);
+// addTransaction("income", 20000, 2);
+// Function to edit a transaction
