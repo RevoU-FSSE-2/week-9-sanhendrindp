@@ -6,36 +6,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const body_parser_1 = __importDefault(require("body-parser"));
-const data_1 = require("./data");
+// import { User, user } from "./data";
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8888;
 app.use(body_parser_1.default.json());
 // =============================== HTTP ROUTE FOR BANKING APP ======================================
 // GET/user/:id
-app.get("/user/:id", (req, res) => {
-    const userId = parseInt(req.params.id); // Make sure to make user id as number
-    const account = data_1.user.find((item) => item.id === userId);
-    //   console.log(account);
-    //   If user input not a number ID
-    if (isNaN(userId)) {
-        res.status(400).json({
-            Message: "Invalid user ID 🚫",
-        });
-        return;
-    }
-    if (!account) {
-        res.status(404).json({
-            Message: `User ID ${userId} not found 🚫`,
-        });
-    }
-    else {
-        res.status(200).json({
-            Message: `User id ${userId} found ✅`,
-            Account: account,
-        });
-    }
-});
+// app.get("/user/:id", (req: Request, res: Response) => {
+//   const userId = parseInt(req.params.id); // Make sure to make user id as number
+//   const account = user.find((item) => item.id === userId);
+//   //   console.log(account);
+//   //   If user input not a number ID
+//   if (isNaN(userId)) {
+//     res.status(400).json({
+//       Message: "Invalid user ID 🚫",
+//     });
+//     return;
+//   }
+//   if (!account) {
+//     res.status(404).json({
+//       Message: `User ID ${userId} not found 🚫`,
+//     });
+//   } else {
+//     res.status(200).json({
+//       Message: `User id ${userId} found ✅`,
+//       Account: account,
+//     });
+//   }
+// });
 // POST/transaction
 // app.post("/transaction", (req: Request, res: Response) => {
 //   const { type, amount, user_id } = req.body;
