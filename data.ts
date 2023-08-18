@@ -154,8 +154,6 @@ export async function addTransaction(
 // addTransaction("income", 20000, 2);
 
 // Function to edit a transaction
-
-// addTransaction()
 export async function editTransaction(
   id: number,
   type: string,

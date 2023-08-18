@@ -131,7 +131,6 @@ function addTransaction(type, amount, user_id) {
 exports.addTransaction = addTransaction;
 // addTransaction("income", 20000, 2);
 // Function to edit a transaction
-// addTransaction()
 function editTransaction(id, type, amount, user_id) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
