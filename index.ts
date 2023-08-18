@@ -1,7 +1,13 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-import { getUsers, getUser, delTransaction, addTransaction } from "./data";
+import {
+  getUsers,
+  getUser,
+  delTransaction,
+  addTransaction,
+  editTransaction,
+} from "./data";
 
 dotenv.config();
 
@@ -119,6 +125,49 @@ app.post("/transaction", async (req, res) => {
     } else {
       res.status(500).json({
         Message: "ERROR! An error occurred while creating transaction 😵",
+      });
+    }
+  }
+});
+
+// PUT transaction
+app.put("/transaction/:id", async (req, res) => {
+  const transactionId = Number(req.params.id);
+  const { type, amount, user_id } = req.body;
+
+  // Error handling if input values are missing
+  if (!type || !amount || !user_id) {
+    res.status(400).json({
+      Message: "Invalid input data 🚫",
+    });
+    return;
+  }
+
+  try {
+    await editTransaction(transactionId, type, amount, user_id);
+
+    res.status(200).json({
+      Message: `Transaction with ID ${transactionId} updated ✅`,
+    });
+  } catch (error) {
+    const typedError = error as Error;
+    if (
+      typedError.message.includes(
+        `Transaction with ID ${transactionId} not found`
+      )
+    ) {
+      res.status(404).json({
+        Message: `Transaction with ID ${transactionId} not found 🚫`,
+      });
+    } else if (
+      typedError.message.includes("Transaction amount exceeds user balance")
+    ) {
+      res.status(400).json({
+        Message: "Transaction amount exceeds user balance 🚫",
+      });
+    } else {
+      res.status(500).json({
+        Message: "An unexpected error occurred while processing the request 😵",
       });
     }
   }

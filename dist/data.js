@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addTransaction = exports.delTransaction = exports.getUser = exports.getUsers = void 0;
+exports.editTransaction = exports.addTransaction = exports.delTransaction = exports.getUser = exports.getUsers = void 0;
 const mysql2_1 = __importDefault(require("mysql2"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -131,3 +131,34 @@ function addTransaction(type, amount, user_id) {
 exports.addTransaction = addTransaction;
 // addTransaction("income", 20000, 2);
 // Function to edit a transaction
+// addTransaction()
+function editTransaction(id, type, amount, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const connection = yield pool.getConnection();
+            // Check if the transaction exists
+            const [transactionRows] = yield connection.query(`SELECT * FROM banking_app.transaction WHERE id = ?`, [id]);
+            if (transactionRows.length === 0) {
+                connection.release();
+                throw new Error(`Transaction with ID ${id} not found`);
+            }
+            // Get user current balance
+            const [userRows] = yield connection.query(`SELECT IFNULL(SUM(CASE WHEN o.type = 'income' THEN o.amount ELSE -o.amount END), 0) as balance
+           FROM banking_app.transaction o
+           WHERE o.user_id = ? AND o.id <> ?`, [user_id, id]);
+            const userBalance = userRows[0].balance;
+            if (type === "expense" && amount > userBalance) {
+                connection.release();
+                throw new Error(`Transaction amount exceeds user balance`);
+            }
+            // Update the transaction
+            yield connection.query(`UPDATE banking_app.transaction SET type = ?, amount = ?, user_id = ? WHERE id = ?`, [type, amount, user_id, id]);
+            connection.release();
+        }
+        catch (error) {
+            console.error("Error when editing transaction:", error);
+            throw error;
+        }
+    });
+}
+exports.editTransaction = editTransaction;

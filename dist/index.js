@@ -127,6 +127,42 @@ app.post("/transaction", (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
     }
 }));
+// PUT transaction
+app.put("/transaction/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const transactionId = Number(req.params.id);
+    const { type, amount, user_id } = req.body;
+    // Error handling if input values are missing
+    if (!type || !amount || !user_id) {
+        res.status(400).json({
+            Message: "Invalid input data 🚫",
+        });
+        return;
+    }
+    try {
+        yield (0, data_1.editTransaction)(transactionId, type, amount, user_id);
+        res.status(200).json({
+            Message: `Transaction with ID ${transactionId} updated ✅`,
+        });
+    }
+    catch (error) {
+        const typedError = error;
+        if (typedError.message.includes(`Transaction with ID ${transactionId} not found`)) {
+            res.status(404).json({
+                Message: `Transaction with ID ${transactionId} not found 🚫`,
+            });
+        }
+        else if (typedError.message.includes("Transaction amount exceeds user balance")) {
+            res.status(400).json({
+                Message: "Transaction amount exceeds user balance 🚫",
+            });
+        }
+        else {
+            res.status(500).json({
+                Message: "An unexpected error occurred while processing the request 😵",
+            });
+        }
+    }
+}));
 // ================================ PORT RUNNING ====================================
 app.get("/", (req, res) => {
     res.send("Welcome to Banking App! 💰");

@@ -154,3 +154,52 @@ export async function addTransaction(
 // addTransaction("income", 20000, 2);
 
 // Function to edit a transaction
+
+// addTransaction()
+export async function editTransaction(
+  id: number,
+  type: string,
+  amount: number,
+  user_id: number
+): Promise<void> {
+  try {
+    const connection = await pool.getConnection();
+
+    // Check if the transaction exists
+    const [transactionRows] = await connection.query<mysql.RowDataPacket[]>(
+      `SELECT * FROM banking_app.transaction WHERE id = ?`,
+      [id]
+    );
+
+    if (transactionRows.length === 0) {
+      connection.release();
+      throw new Error(`Transaction with ID ${id} not found`);
+    }
+
+    // Get user current balance
+    const [userRows] = await connection.query<mysql.RowDataPacket[]>(
+      `SELECT IFNULL(SUM(CASE WHEN o.type = 'income' THEN o.amount ELSE -o.amount END), 0) as balance
+           FROM banking_app.transaction o
+           WHERE o.user_id = ? AND o.id <> ?`,
+      [user_id, id]
+    );
+
+    const userBalance = userRows[0].balance;
+
+    if (type === "expense" && amount > userBalance) {
+      connection.release();
+      throw new Error(`Transaction amount exceeds user balance`);
+    }
+
+    // Update the transaction
+    await connection.query<mysql.ResultSetHeader>(
+      `UPDATE banking_app.transaction SET type = ?, amount = ?, user_id = ? WHERE id = ?`,
+      [type, amount, user_id, id]
+    );
+
+    connection.release();
+  } catch (error) {
+    console.error("Error when editing transaction:", error);
+    throw error;
+  }
+}
