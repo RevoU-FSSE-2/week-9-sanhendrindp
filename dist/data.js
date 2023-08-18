@@ -18,10 +18,10 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const pool = mysql2_1.default
     .createPool({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
+    host: "fdaa:2:c06e:a7b:18a:7faa:5f9f:2",
+    user: "root",
+    password: "1234",
+    database: "banking_app",
 })
     .promise();
 // Function to get all users

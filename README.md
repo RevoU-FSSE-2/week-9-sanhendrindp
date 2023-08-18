@@ -1,1 +1,10 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/Z42oEjTh)
+![Banner](images/Build%20REST%20API%20Server.png)
+
+<h5 align="center">Link Project</h5>
+<p align="center">
+<a href="https://newfinance-tracker.fly.dev/">newfinance-tracker.fly.dev</a>
+</p>
+
+# Project Description
+
+<!-- In week 8, a Financial Tracking app was already created. Now in week 8, we are trying to build a simple REST API server based on the Financial Tracking, so user can perform basic CRUD operations on the provided data. -->
