@@ -25,12 +25,45 @@ app.use(body_parser_1.default.json());
 app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield (0, data_1.getUsers)();
-        res.json(users);
+        res.status(200).json({
+            Message: "Success get all users ✅",
+            Users: users,
+        });
     }
     catch (error) {
-        console.log("Error get users:", error);
+        // console.log("Error get users:", error);
         res.status(500).json({
-            Message: "An error occurred while fetching users.",
+            Message: "ERROR! An error occurred while fetching users.",
+        });
+    }
+}));
+// Get user by id
+app.get("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const id = Number(req.params.id);
+    // Error handling if input id is NaN
+    if (isNaN(id)) {
+        res.status(400).json({
+            Message: "Invalid user ID 🚫",
+        });
+        return;
+    }
+    try {
+        const user = yield (0, data_1.getUser)(id);
+        if (user.length === 0) {
+            res.status(404).json({
+                Message: `User ID ${id} not found 🚫`,
+            });
+        }
+        else {
+            res.status(200).json({
+                Message: `User ID ${id} found ✅`,
+                User: user,
+            });
+        }
+    }
+    catch (error) {
+        res.status(500).json({
+            Message: "ERROR! An error occurred while fetching user.",
         });
     }
 }));
