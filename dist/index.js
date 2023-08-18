@@ -92,6 +92,41 @@ app.delete("/transaction/:id", (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
 }));
+// POST transaction
+app.post("/transaction", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { type, amount, user_id } = req.body;
+    // Error handling if input values are missing
+    if (!type || !amount || !user_id) {
+        res.status(400).json({
+            Message: "Invalid input data 🚫",
+        });
+        return;
+    }
+    try {
+        const transactionUser = yield (0, data_1.addTransaction)(type, amount, user_id);
+        res.status(201).json({
+            Message: `Transaction success for User ID ${transactionUser} ✅`,
+        });
+    }
+    catch (error) {
+        const typedError = error;
+        if (typedError.message.includes("Transaction amount exceeds user balance")) {
+            res.status(400).json({
+                Message: "Transaction amount exceeds user balance 🚫",
+            });
+        }
+        else if (typedError.message.includes(`User with ID ${user_id} not found`)) {
+            res.status(404).json({
+                Message: `User with ID ${user_id} not found 🚫`,
+            });
+        }
+        else {
+            res.status(500).json({
+                Message: "ERROR! An error occurred while creating transaction 😵",
+            });
+        }
+    }
+}));
 // ================================ PORT RUNNING ====================================
 app.get("/", (req, res) => {
     res.send("Welcome to Banking App! 💰");

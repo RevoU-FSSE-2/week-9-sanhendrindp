@@ -109,3 +109,44 @@ export async function delTransaction(user_id: number): Promise<string> {
 }
 
 // delTransaction(3);
+
+// Function to add a transaction
+export async function addTransaction(
+  type: string,
+  amount: number,
+  user_id: number
+): Promise<number> {
+  try {
+    const connection = await pool.getConnection();
+
+    // Get user current balance
+    const [userRows] = await connection.query<mysql.RowDataPacket[]>(
+      `SELECT IFNULL(SUM(CASE WHEN o.type = 'income' THEN o.amount ELSE -o.amount END), 0) as balance
+         FROM banking_app.transaction o
+         WHERE o.user_id = ?`,
+      [user_id]
+    );
+
+    const userBalance = userRows[0].balance;
+
+    if (type === "expense" && amount > userBalance) {
+      connection.release();
+      throw new Error(`Transaction amount exceeds user balance`);
+    }
+
+    // Insert the transaction
+    await connection.query<mysql.RowDataPacket[]>(
+      `INSERT INTO banking_app.transaction (type, amount, user_id) VALUES (?, ?, ?)`,
+      [type, amount, user_id]
+    );
+
+    connection.release();
+
+    return user_id;
+  } catch (error) {
+    console.error("Error when creating transaction:", error);
+    throw error;
+  }
+}
+
+// addTransaction("expense", 400000, 2);

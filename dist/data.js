@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.delTransaction = exports.getUser = exports.getUsers = void 0;
+exports.addTransaction = exports.delTransaction = exports.getUser = exports.getUsers = void 0;
 const mysql2_1 = __importDefault(require("mysql2"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -98,3 +98,30 @@ function delTransaction(user_id) {
 }
 exports.delTransaction = delTransaction;
 // delTransaction(3);
+// Function to add a transaction
+function addTransaction(type, amount, user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const connection = yield pool.getConnection();
+            // Get user current balance
+            const [userRows] = yield connection.query(`SELECT IFNULL(SUM(CASE WHEN o.type = 'income' THEN o.amount ELSE -o.amount END), 0) as balance
+         FROM banking_app.transaction o
+         WHERE o.user_id = ?`, [user_id]);
+            const userBalance = userRows[0].balance;
+            if (type === "expense" && amount > userBalance) {
+                connection.release();
+                throw new Error(`Transaction amount exceeds user balance`);
+            }
+            // Insert the transaction
+            yield connection.query(`INSERT INTO banking_app.transaction (type, amount, user_id) VALUES (?, ?, ?)`, [type, amount, user_id]);
+            connection.release();
+            return user_id;
+        }
+        catch (error) {
+            console.error("Error when creating transaction:", error);
+            throw error;
+        }
+    });
+}
+exports.addTransaction = addTransaction;
+// addTransaction("expense", 400000, 2);
