@@ -1,7 +1,5 @@
 import mysql from "mysql2";
 import dotenv from "dotenv";
-import { error } from "console";
-// import { error } from "console";
 
 dotenv.config();
 
@@ -25,7 +23,7 @@ interface UserAccount {
   name: string;
   address: string;
   balance: number;
-  expense: number | null;
+  expense: number;
 }
 
 // Function to get all users
@@ -44,7 +42,7 @@ export async function getUsers(): Promise<User[]> {
       name: row.name,
       address: row.address,
     }));
-
+    console.log(users);
     return users;
   } catch (error) {
     console.error("Error when get users:", error);
@@ -52,14 +50,7 @@ export async function getUsers(): Promise<User[]> {
   }
 }
 
-// Call getUsers to get all users
-// getUsers()
-//   .then((users) => {
-//     console.log("Users:", users);
-//   })
-//   .catch((error) => {
-//     console.error("An error occurred:", error);
-//   });
+// getUsers();
 
 // Function to get user by id
 export async function getUser(id: number): Promise<UserAccount[]> {
@@ -87,6 +78,7 @@ export async function getUser(id: number): Promise<UserAccount[]> {
       expense: row.total_expense > 0 ? row.total_expense : 0,
       balance: row.total_income - row.total_expense,
     }));
+    // console.log(userAccount);
     return userAccount;
   } catch (error) {
     console.log("Error when get user:", error);
@@ -94,11 +86,26 @@ export async function getUser(id: number): Promise<UserAccount[]> {
   }
 }
 
-// Call getUser to get user with expense & balance
-// getUser(1)
-//   .then((user) => {
-//     console.log("User:", user);
-//   })
-//   .catch((error) => {
-//     console.error("An error occurred:", error);
-//   });
+// getUser(1);
+
+// Function to delete a transaction by ID
+export async function delTransaction(user_id: number): Promise<string> {
+  try {
+    const connection = await pool.getConnection();
+
+    // Delete the transactions by user ID
+    await connection.query(
+      `DELETE FROM banking_app.transaction WHERE user_id = ?`,
+      [user_id]
+    );
+
+    connection.release();
+
+    return `${user_id}`;
+  } catch (error) {
+    console.error("Error when deleting transactions:", error);
+    throw error;
+  }
+}
+
+// delTransaction(3);

@@ -33,13 +33,14 @@ app.get("/users", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         // console.log("Error get users:", error);
         res.status(500).json({
-            Message: "ERROR! An error occurred while fetching users.",
+            Message: "ERROR! An error occurred while fetching users 😵",
         });
     }
 }));
 // Get user by id
 app.get("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const id = Number(req.params.id);
+    // console.log(id);
     // Error handling if input id is NaN
     if (isNaN(id)) {
         res.status(400).json({
@@ -63,7 +64,31 @@ app.get("/user/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     catch (error) {
         res.status(500).json({
-            Message: "ERROR! An error occurred while fetching user.",
+            Message: "ERROR! An error occurred while fetching user 😵",
+        });
+    }
+}));
+// DELETE transaction
+app.delete("/transaction/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = Number(req.params.id);
+    // console.log(user_id);
+    // Error handling if input id is NaN
+    if (isNaN(user_id)) {
+        res.status(400).json({
+            Message: "Invalid user ID 🚫",
+        });
+        return;
+    }
+    try {
+        const delConfrim = yield (0, data_1.delTransaction)(user_id);
+        // console.log(delConfrim);
+        res.status(200).json({
+            Message: `User ID ${delConfrim} transaction deleted 🚽`,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            Message: "ERROR! An error occurred while deleting transactions 😵",
         });
     }
 }));

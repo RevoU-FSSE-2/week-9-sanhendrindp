@@ -12,10 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUser = exports.getUsers = void 0;
+exports.delTransaction = exports.getUser = exports.getUsers = void 0;
 const mysql2_1 = __importDefault(require("mysql2"));
 const dotenv_1 = __importDefault(require("dotenv"));
-// import { error } from "console";
 dotenv_1.default.config();
 const pool = mysql2_1.default
     .createPool({
@@ -38,6 +37,7 @@ function getUsers() {
                 name: row.name,
                 address: row.address,
             }));
+            console.log(users);
             return users;
         }
         catch (error) {
@@ -47,14 +47,7 @@ function getUsers() {
     });
 }
 exports.getUsers = getUsers;
-// Call getUsers to get all users
-// getUsers()
-//   .then((users) => {
-//     console.log("Users:", users);
-//   })
-//   .catch((error) => {
-//     console.error("An error occurred:", error);
-//   });
+// getUsers();
 // Function to get user by id
 function getUser(id) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -76,6 +69,7 @@ function getUser(id) {
                 expense: row.total_expense > 0 ? row.total_expense : 0,
                 balance: row.total_income - row.total_expense,
             }));
+            // console.log(userAccount);
             return userAccount;
         }
         catch (error) {
@@ -85,11 +79,22 @@ function getUser(id) {
     });
 }
 exports.getUser = getUser;
-// Call getUser to get user with expense & balance
-// getUser(1)
-//   .then((user) => {
-//     console.log("User:", user);
-//   })
-//   .catch((error) => {
-//     console.error("An error occurred:", error);
-//   });
+// getUser(1);
+// Function to delete a transaction by ID
+function delTransaction(user_id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const connection = yield pool.getConnection();
+            // Delete the transactions by user ID
+            yield connection.query(`DELETE FROM banking_app.transaction WHERE user_id = ?`, [user_id]);
+            connection.release();
+            return `${user_id}`;
+        }
+        catch (error) {
+            console.error("Error when deleting transactions:", error);
+            throw error;
+        }
+    });
+}
+exports.delTransaction = delTransaction;
+// delTransaction(3);
