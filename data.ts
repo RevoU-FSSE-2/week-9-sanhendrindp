@@ -19,7 +19,7 @@ interface User {
 }
 
 // Function to get all users
-async function getUsers(): Promise<User[]> {
+export async function getUsers(): Promise<User[]> {
   try {
     const connection = await pool.getConnection();
     const [rows] = await connection.query<mysql.RowDataPacket[]>(
@@ -41,10 +41,10 @@ async function getUsers(): Promise<User[]> {
 }
 
 // Call getUsers to get all users
-getUsers()
-  .then((users) => {
-    console.log("Users:", users);
-  })
-  .catch((error) => {
-    console.error("An error occurred:", error);
-  });
+// getUsers()
+//   .then((users) => {
+//     console.log("Users:", users);
+//   })
+//   .catch((error) => {
+//     console.error("An error occurred:", error);
+//   });

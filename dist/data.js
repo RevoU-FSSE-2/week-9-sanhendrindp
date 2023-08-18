@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.getUsers = void 0;
 const mysql2_1 = __importDefault(require("mysql2"));
 const dotenv_1 = __importDefault(require("dotenv"));
 // import { error } from "console";
@@ -44,11 +45,12 @@ function getUsers() {
         }
     });
 }
+exports.getUsers = getUsers;
 // Call getUsers to get all users
-getUsers()
-    .then((users) => {
-    console.log("Users:", users);
-})
-    .catch((error) => {
-    console.error("An error occurred:", error);
-});
+// getUsers()
+//   .then((users) => {
+//     console.log("Users:", users);
+//   })
+//   .catch((error) => {
+//     console.error("An error occurred:", error);
+//   });
